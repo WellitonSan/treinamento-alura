@@ -1,4 +1,8 @@
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -26,17 +30,37 @@ public class App {
         //System.out.println(listaDeFilmes.get(0));
      
         // exibir e manipular os dados
+        var geradora = new GeradoraDeFigurinhas();
+
+        //criando diretorio se ele nao existe para depositar figura
+        var diretorio = new File("saida");
+        diretorio.mkdir();
+
         for (Map<String,String> filme : listaDeFilmes) {
-            System.out.println("\u001b[1mTítulo:\u001b[m " + filme.get("title"));
-            System.out.println("\u001b[1mURL da imagem:\u001b[m " + filme.get("image"));
-            System.out.println(filme.get("imDbRating"));
+            String urlImagem = filme.get("image");
+            String titulo = filme.get("title");
+            double classificacao = Double.parseDouble(filme.get("imDbRating"));
             
-            double classificação = Double.parseDouble(filme.get("imDbRating"));
-            int numeroEstrelinhas = (int) classificação;
-            for (int n = 0; n < numeroEstrelinhas; n++){
-                System.out.print("☺");
+            String textoFigurinha;
+            InputStream imagemAvaliativa;
+            if (classificacao >= 9.0){
+                textoFigurinha = "Top";
+                imagemAvaliativa = new FileInputStream(new File("sobreposicao/joia.png"));
+            } else {
+                textoFigurinha = "Ruim";
+                imagemAvaliativa = new FileInputStream(new File("sobreposicao/negativo.png"));
             }
+
+            
+            InputStream inputStream = new URL(urlImagem).openStream();
+            String nomeArquivo = "saida/" + titulo + ".png";
+
+            geradora.cria(inputStream, nomeArquivo, textoFigurinha, imagemAvaliativa);
+
+            System.out.println(titulo);
+            System.out.println(classificacao);
             System.out.println("\n"); 
+            
         }
 
     }
