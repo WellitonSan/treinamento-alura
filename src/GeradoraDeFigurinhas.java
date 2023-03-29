@@ -16,7 +16,7 @@ import javax.imageio.ImageIO;
 
 public class GeradoraDeFigurinhas {
     
-    public void cria(InputStream inputStream, String nomeArquivo, String texto, InputStream inputStreamSobreposicao) throws Exception {
+    public void cria(InputStream inputStream, String nomeArquivo) throws Exception {
         //leitura da imagem
         
         //BufferedImage imagemOriginal = ImageIO.read(new File("entrada/filme.jpg"));
@@ -25,55 +25,27 @@ public class GeradoraDeFigurinhas {
         //InputStream inputStream = new URL("").openStream();
         BufferedImage imagemOriginal = ImageIO.read(inputStream);
 
-
-        //cria nova imagem em memória com transp
+        // cria nova imagem em memória com transparência e com tamanho novo
         int largura = imagemOriginal.getWidth();
-        int altura = imagemOriginal.getWidth();
-        int novaAltura = altura + 600;
-
+        int altura = imagemOriginal.getHeight();
+        int novaAltura = altura + 200;
         BufferedImage novaImagem = new BufferedImage(largura, novaAltura, BufferedImage.TRANSLUCENT);
 
-        //copiar a imagem original para novo imagem
+        // copiar a imagem original pra novo imagem (em memória)
         Graphics2D graphics = (Graphics2D) novaImagem.getGraphics();
         graphics.drawImage(imagemOriginal, 0, 0, null);
-        
-        BufferedImage imagemSobreposicao = ImageIO.read(inputStreamSobreposicao);
-        int posicaoImagemSobreposicaoY = novaAltura - imagemSobreposicao.getWidth();
-        graphics.drawImage(imagemSobreposicao, 0, posicaoImagemSobreposicaoY, null);
-        
-        //Configurar a fonte
-        var fonte = new Font("Impact", Font.BOLD, 70);
-        graphics.setColor(Color.yellow);
+
+        // configurar a fonte
+        var fonte = new Font(Font.SANS_SERIF, Font.BOLD, 64);
+        graphics.setColor(Color.YELLOW);
         graphics.setFont(fonte);
 
-        //escrever frase na nova imagem
-        //String texto = "Top";
-        FontMetrics fontMetrics = graphics.getFontMetrics();
-        Rectangle2D retangulo = fontMetrics.getStringBounds(texto, graphics);
-        int larguraTexto = (int) retangulo.getWidth();
-        int posicaoTextoX = (largura - larguraTexto) / 2;
-        int posicaoTextoY = novaAltura - 100;
-        graphics.drawString(texto, posicaoTextoX, posicaoTextoY);
+        // escrever uma frase na nova imagem
+        graphics.drawString("TOPZERA", 100, novaAltura - 100);
 
-        //borda
-        FontRenderContext fontRenderContext = graphics.getFontRenderContext();
-        new TextLayout(texto, fonte, fontRenderContext);
-        var TextLayout = new TextLayout(texto, fonte, fontRenderContext);
-        Shape outline = TextLayout.getOutline(null);
-        AffineTransform transform = graphics.getTransform();
-        transform.translate(posicaoTextoX, posicaoTextoY);
-        graphics.setTransform(transform);
+        // escrever a nova imagem em um arquivo
+        ImageIO.write(novaImagem, "png", new File(nomeArquivo));
 
-        var outlineStroke = new BasicStroke(largura * 0.004f);
-        graphics.setStroke(outlineStroke);
-
-        graphics.setColor(Color.black);
-        graphics.draw(outline);
-        graphics.setClip(outline);
-
-
-        //escrever a nova imagem em um arquivo
-        ImageIO.write(novaImagem, "png", new File(nomeArquivo)); //("saida/figurinha.png", null));
-    }   
+    }
 
 }
