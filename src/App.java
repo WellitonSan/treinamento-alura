@@ -6,7 +6,7 @@ public class App {
     public static void main(String[] args) throws Exception {
         
 
-        API api = API.IMDB_TOP_MOVIES;
+        API api = API.Spring;
 
         //fazer uma conexão HTTP (protocolo) buscando top 250 filmes da API
         String url = api.getUrl();
@@ -22,7 +22,7 @@ public class App {
 
         var geradora = new GeradoraDeFigurinhas();
 
-        for (int i = 0; i < 3; i ++){
+        for (int i = 0; i < 5; i ++){
 
             Conteudo conteudo = conteudos.get(i);
 
